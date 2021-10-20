@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="リソース &apos;forge-1.12.2-14.23.5.2855-mdk&apos; を削除" deleteContents="false" description="リソース &apos;forge-1.12.2-14.23.5.2855-mdk&apos; を削除" element1="/forge-1.12.2-14.23.5.2855-mdk" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1632301738137"/>
+</session>
