@@ -33,9 +33,9 @@ public class Item {
 
     public String toString() {
         return "Item{" +
-                "title='" + title + '\'' +
-                ", link='" + link + '\'' +
-                ", description='" + description + '\'' +
+                "title='" + getTitle() + '\'' +
+                ", link='" + getLink() + '\'' +
+                ", description='" + getDescription() + '\'' +
                 '}';
     }
 }
