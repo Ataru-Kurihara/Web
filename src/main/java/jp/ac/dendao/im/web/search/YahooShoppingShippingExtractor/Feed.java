@@ -81,6 +81,7 @@ public class Feed {
         ArrayList<Item> itemList = feed.getItemList();
         for (Item item : itemList) {
             System.out.println(item);
+            System.out.println();
         }
     }
 }
