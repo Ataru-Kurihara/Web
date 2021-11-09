@@ -1,17 +1,12 @@
-package jp.ac.dendao.im.web.search.YahooShoppingShippingExtractor;
+package com.google.api.services.samples.youtube.cmdline.youtube_cmdline_search_sample;
 
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
-import com.google.api.services.youtube.model.Thumbnail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,31 +15,30 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
 public class GetResource {
-    /** Global instance properties filename. */
-    private static String PROPERTIES_FILENAME = "youtube.properties";
+    /**
+     * Define a global variable that identifies the name of a file that
+     * contains the developer's API key.
+     */
+    private static final String PROPERTIES_FILENAME = "youtube.properties";
 
-    /** Global instance of the HTTP transport. */
-    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-
-    /** Global instance of the JSON factory. */
-    private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-
-    /** Global instance of the max number of videos we want returned (50 = upper limit per page). */
     private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
 
-    /** Global instance of Youtube object to make all API requests. */
+    /**
+     * Define a global instance of a Youtube object, which will be used
+     * to make YouTube Data API requests.
+     */
     private static YouTube youtube;
 
-
     /**
-     * Initializes YouTube object to search for videos on YouTube (Youtube.Search.List). The program
-     * then prints the names and thumbnails of each of the videos (only first 50 videos).
+     * Initialize a YouTube object to search for videos on YouTube. Then
+     * display the name and thumbnail image of each video in the result set.
      *
      * @param args command line args.
      */
     public static void main(String[] args) {
-        // Read the developer key from youtube.properties
+        // Read the developer key from the properties file.
         Properties properties = new Properties();
         try {
             InputStream in = YouTube.Search.class.getResourceAsStream("/" + PROPERTIES_FILENAME);
@@ -57,44 +51,44 @@ public class GetResource {
         }
 
         try {
-            /*
-             * The YouTube object is used to make all API requests. The last argument is required, but
-             * because we don't need anything initialized when the HttpRequest is initialized, we override
-             * the interface and provide a no-op function.
-             */
-            youtube = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, new HttpRequestInitializer() {
-                public void initialize(HttpRequest request) throws IOException {}
+            // This object is used to make YouTube Data API requests. The last
+            // argument is required, but since we don't need anything
+            // initialized when the HttpRequest is initialized, we override
+            // the interface and provide a no-op function.
+            youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, new HttpRequestInitializer() {
+                public void initialize(HttpRequest request) throws IOException {
+                }
             }).setApplicationName("youtube-cmdline-search-sample").build();
 
-            // Get query term from user.
+            // Prompt the user to enter a query term.
             String queryTerm = getInputQuery();
 
+            // Define the API request for retrieving search results.
             YouTube.Search.List search = youtube.search().list("id,snippet");
-            /*
-             * It is important to set your API key from the Google Developer Console for
-             * non-authenticated requests (found under the Credentials tab at this link:
-             * console.developers.google.com/). This is good practice and increased your quota.
-             */
+
+            // Set your developer key from the {{ Google Cloud Console }} for
+            // non-authenticated requests. See:
+            // {{ https://cloud.google.com/console }}
             String apiKey = properties.getProperty("youtube.apikey");
             search.setKey(apiKey);
             search.setQ(queryTerm);
-            /*
-             * We are only searching for videos (not playlists or channels). If we were searching for
-             * more, we would add them as a string like this: "video,playlist,channel".
-             */
+
+            // Restrict the search results to only include videos. See:
+            // https://developers.google.com/youtube/v3/docs/search/list#type
             search.setType("video");
-            /*
-             * This method reduces the info returned to only the fields we need and makes calls more
-             * efficient.
-             */
-            search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url)");
+
+            // To increase efficiency, only retrieve the fields that the
+            // application uses.
+            search.setFields("items(id/kind,id/videoId,snippet/title,snippet/thumbnails/default/url, snippet/channelId, snippet/channelTitle)");
             search.setMaxResults(NUMBER_OF_VIDEOS_RETURNED);
+
+            // Call the API and print results.
             SearchListResponse searchResponse = search.execute();
-
             List<SearchResult> searchResultList = searchResponse.getItems();
-
             if (searchResultList != null) {
                 prettyPrint(searchResultList.iterator(), queryTerm);
+//                System.out.println(searchResponse);
+//                System.out.println(searchResultList);
             }
         } catch (GoogleJsonResponseException e) {
             System.err.println("There was a service error: " + e.getDetails().getCode() + " : "
@@ -107,7 +101,7 @@ public class GetResource {
     }
 
     /*
-     * Returns a query term (String) from user via the terminal.
+     * Prompt the user to enter a query term and return the user-specified term.
      */
     private static String getInputQuery() throws IOException {
 
@@ -118,15 +112,16 @@ public class GetResource {
         inputQuery = bReader.readLine();
 
         if (inputQuery.length() < 1) {
-            // If nothing is entered, defaults to "YouTube Developers Live."
+            // Use the string "YouTube Developers Live" as a default.
             inputQuery = "YouTube Developers Live";
         }
         return inputQuery;
     }
 
+
     /*
-     * Prints out all SearchResults in the Iterator. Each printed line includes title, id, and
-     * thumbnail.
+     * Prints out all results in the Iterator. For each result, print the
+     * title, video ID, and thumbnail.
      *
      * @param iteratorSearchResults Iterator of SearchResults to print
      *
@@ -148,14 +143,19 @@ public class GetResource {
             SearchResult singleVideo = iteratorSearchResults.next();
             ResourceId rId = singleVideo.getId();
 
-            // Double checks the kind is video.
-            if (rId.getKind().equals("youtube#video")) {
-                Thumbnail thumbnail = (Thumbnail) singleVideo.getSnippet().getThumbnails().get("default");
 
-                System.out.println(" Video Id" + rId.getVideoId());
-                System.out.println(" Title: " + singleVideo.getSnippet().getTitle());
-                System.out.println(" Thumbnail: " + thumbnail.getUrl());
-                System.out.println("\n-------------------------------------------------------------\n");
+
+
+
+            // Confirm that the result represents a video. Otherwise, the
+            // item will not contain a video ID.
+
+            if (rId.getKind().equals("youtube#video")) {
+                System.out.println("チャンネルURL："+"http://www.youtube.com/channel/"+singleVideo.getSnippet().getChannelId());
+                System.out.println("チャンネル名："+singleVideo.getSnippet().getChannelTitle());
+                System.out.println("動画URL：" + "http://www.youtube.com/watch?v=" + rId.getVideoId());
+                System.out.println("動画タイトル：" + singleVideo.getSnippet().getTitle());
+                System.out.println("------------------------------------------------");
             }
         }
     }

@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="google-api-client-1.25.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/main/java/jp/ac/dendao/im/web/search/YahooShoppingShippingExtractor/google-api-client-1.25.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/java/jp/ac/dendao/im/web/search/YahooShoppingShippingExtractor/google-api-services-youtube-v3-rev222-1.25.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/java/jp/ac/dendao/im/web/search/YahooShoppingShippingExtractor/google-http-client-1.25.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/java/jp/ac/dendao/im/web/search/YahooShoppingShippingExtractor/google-http-client-jackson2-1.25.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/java/jp/ac/dendao/im/web/search/YahooShoppingShippingExtractor/google-oauth-client-1.25.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/java/jp/ac/dendao/im/web/search/YahooShoppingShippingExtractor/guava-26.0-jre.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/java/jp/ac/dendao/im/web/search/YahooShoppingShippingExtractor/jackson-core-2.9.6.jar!/" />
+      <root url="jar://$PROJECT_DIR$/src/main/java/jp/ac/dendao/im/web/search/YahooShoppingShippingExtractor/jsr305-3.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
