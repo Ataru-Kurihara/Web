@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="YahooShoppingShippingExtractor" target="1.7" />
+      <module name="YahooShoppingShippingExtractor" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

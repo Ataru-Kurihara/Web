@@ -1,5 +1,6 @@
 package com.google.api.services.samples.youtube.cmdline.youtube_cmdline_search_sample;
 
+
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpRequestInitializer;
@@ -7,6 +8,7 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import jp.ac.dendao.im.web.search.YahooShoppingShippingExtractor.amazon;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,28 +19,10 @@ import java.util.List;
 import java.util.Properties;
 
 public class GetResource {
-    /**
-     * Define a global variable that identifies the name of a file that
-     * contains the developer's API key.
-     */
     private static final String PROPERTIES_FILENAME = "youtube.properties";
-
     private static final long NUMBER_OF_VIDEOS_RETURNED = 25;
-
-    /**
-     * Define a global instance of a Youtube object, which will be used
-     * to make YouTube Data API requests.
-     */
     private static YouTube youtube;
-
-    /**
-     * Initialize a YouTube object to search for videos on YouTube. Then
-     * display the name and thumbnail image of each video in the result set.
-     *
-     * @param args command line args.
-     */
     public static void main(String[] args) {
-        // Read the developer key from the properties file.
         Properties properties = new Properties();
         try {
             InputStream in = YouTube.Search.class.getResourceAsStream("/" + PROPERTIES_FILENAME);
@@ -51,10 +35,6 @@ public class GetResource {
         }
 
         try {
-            // This object is used to make YouTube Data API requests. The last
-            // argument is required, but since we don't need anything
-            // initialized when the HttpRequest is initialized, we override
-            // the interface and provide a no-op function.
             youtube = new YouTube.Builder(Auth.HTTP_TRANSPORT, Auth.JSON_FACTORY, new HttpRequestInitializer() {
                 public void initialize(HttpRequest request) throws IOException {
                 }
@@ -100,17 +80,11 @@ public class GetResource {
         }
     }
 
-    /*
-     * Prompt the user to enter a query term and return the user-specified term.
-     */
     private static String getInputQuery() throws IOException {
-
-        String inputQuery = "";
-
-        System.out.print("Please enter a search term: ");
+        amazon a = new amazon();
+        //System.out.print("Please enter a search term: ");
         BufferedReader bReader = new BufferedReader(new InputStreamReader(System.in));
-        inputQuery = bReader.readLine();
-
+        String inputQuery = a.getName();//bReader.readLine();
         if (inputQuery.length() < 1) {
             // Use the string "YouTube Developers Live" as a default.
             inputQuery = "YouTube Developers Live";
@@ -118,15 +92,6 @@ public class GetResource {
         return inputQuery;
     }
 
-
-    /*
-     * Prints out all results in the Iterator. For each result, print the
-     * title, video ID, and thumbnail.
-     *
-     * @param iteratorSearchResults Iterator of SearchResults to print
-     *
-     * @param query Search query (String)
-     */
     private static void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {
 
         System.out.println("\n=============================================================");
@@ -139,17 +104,8 @@ public class GetResource {
         }
 
         while (iteratorSearchResults.hasNext()) {
-
             SearchResult singleVideo = iteratorSearchResults.next();
             ResourceId rId = singleVideo.getId();
-
-
-
-
-
-            // Confirm that the result represents a video. Otherwise, the
-            // item will not contain a video ID.
-
             if (rId.getKind().equals("youtube#video")) {
                 System.out.println("チャンネルURL："+"http://www.youtube.com/channel/"+singleVideo.getSnippet().getChannelId());
                 System.out.println("チャンネル名："+singleVideo.getSnippet().getChannelTitle());
@@ -159,4 +115,5 @@ public class GetResource {
             }
         }
     }
+
 }

@@ -40,6 +40,7 @@ public class YahooShoppingItem {
 			//BufferedReader reader = new BufferedReader(new FileReader(filename));
 
 	        Pattern pattern = Pattern.compile("送料([0-9,]+)円");  // グループの指定が1つ(1番目)
+
 	        shipping = -1;  // 送料 (見つからなかったら -1 のまま)
 
 			String line;
