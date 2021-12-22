@@ -8,12 +8,11 @@ import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
+import com.google.api.services.youtube.model.Video;
 import jp.ac.dendao.im.web.search.YahooShoppingShippingExtractor.amazon;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -67,8 +66,6 @@ public class GetResource {
             List<SearchResult> searchResultList = searchResponse.getItems();
             if (searchResultList != null) {
                 prettyPrint(searchResultList.iterator(), queryTerm);
-//                System.out.println(searchResponse);
-//                System.out.println(searchResultList);
             }
         } catch (GoogleJsonResponseException e) {
             System.err.println("There was a service error: " + e.getDetails().getCode() + " : "
@@ -82,9 +79,7 @@ public class GetResource {
 
     private static String getInputQuery() throws IOException {
         amazon a = new amazon();
-        //System.out.print("Please enter a search term: ");
-        BufferedReader bReader = new BufferedReader(new InputStreamReader(System.in));
-        String inputQuery = a.getName();//bReader.readLine();
+        String inputQuery = String.valueOf(a.getItemName());//bReader.readLine();
         if (inputQuery.length() < 1) {
             // Use the string "YouTube Developers Live" as a default.
             inputQuery = "YouTube Developers Live";
@@ -92,17 +87,20 @@ public class GetResource {
         return inputQuery;
     }
 
-    private static void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) {
+    private static void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) throws InterruptedException, IOException {
 
         System.out.println("\n=============================================================");
         System.out.println(
-                "   First " + NUMBER_OF_VIDEOS_RETURNED + " videos for search on \"" + query + "\".");
+                " 選択されたカテゴリーの一位の商品は \"" + query + "\"です。");
+        System.out.println("この商品から"+NUMBER_OF_VIDEOS_RETURNED+"本の関連動画を探します");
         System.out.println("=============================================================\n");
 
         if (!iteratorSearchResults.hasNext()) {
             System.out.println(" There aren't any results for your query.");
         }
-
+        Thread.sleep(3000);
+        YouTube.Videos.List list = youtube.videos().list("statistics");
+        Video v = list.execute().getItems().get(0);
         while (iteratorSearchResults.hasNext()) {
             SearchResult singleVideo = iteratorSearchResults.next();
             ResourceId rId = singleVideo.getId();
@@ -111,7 +109,9 @@ public class GetResource {
                 System.out.println("チャンネル名："+singleVideo.getSnippet().getChannelTitle());
                 System.out.println("動画URL：" + "http://www.youtube.com/watch?v=" + rId.getVideoId());
                 System.out.println("動画タイトル：" + singleVideo.getSnippet().getTitle());
+                System.out.println(v.getStatistics().getViewCount());
                 System.out.println("------------------------------------------------");
+
             }
         }
     }
