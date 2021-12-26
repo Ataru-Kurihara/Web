@@ -10,12 +10,15 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
 import jp.ac.dendao.im.web.search.YahooShoppingShippingExtractor.amazon;
+import jp.ac.dendao.im.web.search.YahooShoppingShippingExtractor.getRank;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GetResource {
     private static final String PROPERTIES_FILENAME = "youtube.properties";
@@ -78,20 +81,47 @@ public class GetResource {
     }
 
     private static String getInputQuery() throws IOException {
+//        amazon a = new amazon();
+//        String inputQuery = String.valueOf(a.getItemName());//bReader.readLine();
+//        if (inputQuery.length() < 1) {
+//            // Use the string "YouTube Developers Live" as a default.
+//            inputQuery = "YouTube Developers Live";
+//        }
+//        return inputQuery;
         amazon a = new amazon();
-        String inputQuery = String.valueOf(a.getItemName());//bReader.readLine();
-        if (inputQuery.length() < 1) {
-            // Use the string "YouTube Developers Live" as a default.
-            inputQuery = "YouTube Developers Live";
+        getRank ranks = new getRank();
+        String new_s = null;
+        String new_item = null;
+        List<String> items = a.getItemName();
+        for(String s:items){
+            Pattern p = Pattern.compile(".*5つ星のうち");
+            Matcher matcher = p.matcher(s);
+            while (matcher.find()) {
+                s = matcher.group();
+                new_s = s.replaceAll("5つ星のうち", "");
+            }
+            System.out.println(new_s);
+
         }
-        return inputQuery;
+        int rank = Integer.parseInt(ranks.getRank())-1;
+        String regex = "#[0-10]";
+        String item = items.get(rank);
+        Pattern p = Pattern.compile(".*5つ星のうち");
+        Matcher matcher = p.matcher(item);
+        while (matcher.find()) {
+            item = matcher.group();
+            new_item = item.replaceAll("5つ星のうち", "");
+            new_item = new_item.replaceAll(regex,"");
+
+        }
+        return new_item;
     }
 
     private static void prettyPrint(Iterator<SearchResult> iteratorSearchResults, String query) throws InterruptedException, IOException {
 
         System.out.println("\n=============================================================");
         System.out.println(
-                " 選択されたカテゴリーの一位の商品は \"" + query + "\"です。");
+                " 選ばれた商品は \"" + query + "\"です。");
         System.out.println("この商品から"+NUMBER_OF_VIDEOS_RETURNED+"本の関連動画を探します");
         System.out.println("=============================================================\n");
 
