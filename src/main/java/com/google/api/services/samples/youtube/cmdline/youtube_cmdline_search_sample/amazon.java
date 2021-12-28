@@ -1,4 +1,4 @@
-package jp.ac.dendao.im.web.search.YahooShoppingShippingExtractor;
+package com.google.api.services.samples.youtube.cmdline.youtube_cmdline_search_sample;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,8 +24,8 @@ public class amazon {
         Document doc = Jsoup.connect(urlString).data("q", "java").get();
         Elements elements = doc.select(".zg-item-immersion");
         List<String> items = new ArrayList<String>(10);
-        for (int i = 0; i < 10; i++) {
-            items.add(elements.get(i).text());
+        for (org.jsoup.nodes.Element element : elements) {
+            items.add(element.text());
         }
         return items;
     }

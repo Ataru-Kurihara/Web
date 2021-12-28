@@ -9,8 +9,6 @@ import com.google.api.services.youtube.model.ResourceId;
 import com.google.api.services.youtube.model.SearchListResponse;
 import com.google.api.services.youtube.model.SearchResult;
 import com.google.api.services.youtube.model.Video;
-import jp.ac.dendao.im.web.search.YahooShoppingShippingExtractor.amazon;
-import jp.ac.dendao.im.web.search.YahooShoppingShippingExtractor.getRank;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -90,7 +88,6 @@ public class GetResource {
 //        return inputQuery;
         amazon a = new amazon();
         getRank ranks = new getRank();
-        String new_s = null;
         String new_item = null;
         List<String> items = a.getItemName();
         for(String s:items){
@@ -98,13 +95,12 @@ public class GetResource {
             Matcher matcher = p.matcher(s);
             while (matcher.find()) {
                 s = matcher.group();
-                new_s = s.replaceAll("5つ星のうち", "");
+                s = s.replaceAll("5つ星のうち", "");
             }
-            System.out.println(new_s);
-
+            System.out.println(s);
         }
         int rank = Integer.parseInt(ranks.getRank())-1;
-        String regex = "#[0-10]";
+        String regex = "#[0-50]";
         String item = items.get(rank);
         Pattern p = Pattern.compile(".*5つ星のうち");
         Matcher matcher = p.matcher(item);
@@ -142,6 +138,8 @@ public class GetResource {
                 System.out.println(v.getStatistics().getViewCount());
                 System.out.println("------------------------------------------------");
 
+            }else {
+                System.out.println("動画は見つからなかったです....");
             }
         }
     }

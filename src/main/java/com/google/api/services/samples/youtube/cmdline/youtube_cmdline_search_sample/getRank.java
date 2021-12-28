@@ -1,4 +1,4 @@
-package jp.ac.dendao.im.web.search.YahooShoppingShippingExtractor;
+package com.google.api.services.samples.youtube.cmdline.youtube_cmdline_search_sample;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +12,7 @@ public class getRank {
         this.rank = rank;
     }
     public String getRank() throws IOException {
-        System.out.println("1位から10位の商品で気になる商品の順位を入力してください");
+        System.out.println("1位から50位の商品で気になる商品の順位を入力してください");
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String rank = reader.readLine();
         if (rank.length() < 1) {
